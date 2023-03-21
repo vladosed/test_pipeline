@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login --no-include-email --region us-east-1)
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t vladiko-ecr .
+      - docker tag vladiko-ecr:latest 829092859139.dkr.ecr.us-east-1.amazonaws.com/vladiko-ecr:latest
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push 829092859139.dkr.ecr.us-east-1.amazonaws.com/vladiko-ecr:latest
+      - echo Updating the ECS service...
+      - ecs-cli compose --file docker-compose.yml --project-name vladiko-ecs service up --create-log-groups --cluster-config vladiko-ecs-cluster --force-deployment
