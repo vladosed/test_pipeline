@@ -13,6 +13,9 @@ phases:
       - docker tag vladiko-ecr:latest public.ecr.aws/j1h9h4t0/vladiko-ecr:latest
   post_build:
     commands:
+      - DOCKER_LOGIN=$(aws ssm get-parameter --name "/docker_login" --with-decryption --query "Parameter.Value" --output text --region us-east-1)
+      - DOCKER_PASSWORD=$(aws ssm get-parameter --name "/docker_password" --with-decryption --query "Parameter.Value" --output text --region us-east-1)
+      - docker login --username=$DOCKER_LOGIN --password=$DOCKER_PASSWORD
       - echo Pushing the Docker image...
       - docker push public.ecr.aws/j1h9h4t0/vladiko-ecr:latest
       - echo Updating the ECS service...
