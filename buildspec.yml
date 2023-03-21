@@ -10,10 +10,10 @@ phases:
     commands:
       - echo Building the Docker image...
       - docker build -t vladiko-ecr .
-      - docker tag vladiko-ecr:latest 829092859139.dkr.ecr.us-east-1.amazonaws.com/vladiko-ecr:latest
+      - docker tag vladiko-ecr:latest public.ecr.aws/j1h9h4t0/vladiko-ecr:latest
   post_build:
     commands:
       - echo Pushing the Docker image...
-      - docker push 829092859139.dkr.ecr.us-east-1.amazonaws.com/vladiko-ecr:latest
+      - docker push public.ecr.aws/j1h9h4t0/vladiko-ecr:latest
       - echo Updating the ECS service...
       - ecs-cli compose --file docker-compose.yml --project-name vladiko-ecs-cluster service up --create-log-groups --cluster-config vladiko-ecs-cluster --force-deployment
